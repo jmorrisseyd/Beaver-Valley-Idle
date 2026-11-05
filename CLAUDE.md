@@ -1,6 +1,31 @@
-# Beaver Valley
+# Beaver Valley Idle
 
-A relaxed, mobile-friendly three.js game: you play a beaver in a procedurally generated valley. You chew trees for logs, build dams anywhere, watch ponds fill, build a lodge, and wildlife moves in as the wetland grows. There is no fail state.
+An incremental ("cookie clicker") game played over a living three.js valley. You gnaw
+logs with a button and spend them in the lodgebook; every purchase is applied to the
+real valley behind the interface, which keeps its water simulation, dam wear, wildlife
+and day/night cycle from the game this is forked from.
+
+## How this differs from Beaver Valley
+
+The valley, water and wildlife code is unchanged. What was taken out: the joystick and
+keys, the context action (chew/build/patch/splash), the build ghost, the action HUD,
+the journal sheet and the portable save codes. What replaced it:
+
+- **The idle layer** (its own `// ====` section, just before Update): `BUILDINGS`,
+  `UPGRADES`, `costOf`/`lpsOf`/`clickPower`, the lodgebook renderer, the save, and
+  `gnaw()`.
+- **Purchases drive the world.** `applyWorld()` makes the valley match what has been
+  bought: `placeDams` walks an ordered list of channel nodes (`damStepList` — one dam
+  spanned and raised to full height before the next one downstream), `placeLodge`,
+  `placeKits` and `placeSaplings` do the rest. `damStepList` depends on the river, so it
+  is only built *after* `buildWorld` has seeded the noise — `startWorld` resets it.
+- **The beaver wanders.** `pickWander()` sends it between the dam, the lodge and the
+  water; `update()` steers toward that instead of reading input.
+- **The camera** keeps a slow circuit of whatever has been built, re-centring every two
+  seconds on the dam sections and lodge.
+- **Saves** are `localStorage['beaverValleyIdle1']`: logs, counts, upgrades, flood marks
+  and a timestamp. The world is *derived* from the counts rather than stored, so loading
+  is just `startWorld(save)`. Time away pays out at half rate, capped at eight hours.
 
 ## Layout
 
@@ -18,7 +43,7 @@ The main sections inside the script are marked with `// ====` banner comments, i
 | Wildlife | Ducks, frog, dragonfly, heron, deer, fish |
 | Procedural valley | Seeded noise, `genHeight()`, the water simulation (`computeWater`, `stepWater`), terrain and water meshes, terrain splat material |
 | Instanced plants | Rocks, flowers, swaying grass clumps (`updateGrass`), lily pads, reeds |
-| Game state … Update | Trees, dams, lodge, kits, journal/goals, UI, input, save/load and save codes, world setup, wildlife AI, main `update(dt)` loop |
+| Game state … Update | Trees, dams, lodge, kits, goals, UI helpers, world setup, wildlife AI, the idle layer, main `update(dt)` loop |
 
 ## Interface
 
@@ -33,10 +58,8 @@ stack is system fonts, so a blocked CDN degrades rather than breaks.
 
 Interface glyphs are line icons from an inline SVG sprite at the top of `<body>`
 (`<symbol id="i-…">`, 24px grid, 1.6 stroke, `currentColor`), used through
-`icon(name)` in the script or `<use href="#i-name">` in markup. The journal keeps
-emoji on purpose: its wildlife and plant entries read as content, not chrome.
-`setAction()` only rewrites the act button when the icon or label actually
-changes, since it is called every frame.
+`icon(name)` in the script or `<use href="#i-name">` in markup. The lodgebook (`#shop`) is the one paper sheet: a right-hand panel on wide
+screens, a bottom sheet under 820px.
 
 ## Key mechanics
 
@@ -45,15 +68,15 @@ changes, since it is called every frame.
 - **Flow:** `updateFlow()` writes an `aFlow` vec2 per node from the downhill gradient of the water surface, using wet neighbours only (a high bank is not a slope). The water shader advects its noise along that vector and whitens where the current is quick, so ponds sit glassy, the channel runs, and the step below a dam churns. Recomputed with the water mesh.
 - **Dam wear:** every section carries `wear[i]` (0 sound, 1 washed out). `wearDams()` erodes it in proportion to `damHead[i]`, the drop across that section, faster in rain; `eff` subtracts the wear, so the crest sinks and the pond follows it down. Past `LEAK_AT` it spits water downstream; at 1 the section drops a level. A log patches it back to 0 through the build button, which reads `Patch dam` whenever `wear > PATCH_AT`. Kits mend the worst section at `KIT_MEND` each per second, so a family roughly offsets the wear on one section and a bigger family gains on it; they also pick dam spots to potter to (`kitDamSpot`). The HUD's Dam pill (`#damPill`, beside the goal in `#hud2`) reports the worst section as Sound / Wearing / Leaking / Breaking with a bar of how much of it is left, and hides itself when there is no dam. The water is only re-solved once the crests have drifted 5 cm (`wearSync` holds the baseline), not every frame.
 - **Rendering:** the water mesh shares the node grid. Dry nodes next to water borrow a neighbour's level to form shorelines, but never across a dam.
-- **Saves:** autosave goes to `localStorage['beaverValley1']`, dam wear included as the `worn` pairs (`w` in a save code); an older save without it just loads sound dams. Portable codes (`makeCode`/`readCode`) are compact JSON → deflate-raw → base64url, prefixed `BV1-`. Tree IDs come from deterministic generation in `genTrees()`, so felled and drowned trees restore by ID. Keep that function's random-draw order stable, or old codes will break.
-- **Trees:** a sapling (`state === 'grow'`) can be felled as well as a grown tree. `treeFrac()` is how far along it is; chew time and the log payout both scale by it (`tr.logs`, floored, never below one), so the act button reads `Gnaw` and a half-grown tree gives half the wood.
-- **Looks:** realistic is the default. Watercolour is a post-process toggled from the journal (`setStyle`). Cel shading is only available with `#style-cel`.
+- **Saves:** see the fork notes above — `localStorage['beaverValleyIdle1']`, counts not world state.
+- **Trees:** saplings grow in on their own and when you buy them; nothing fells them here, so `treeFrac()` and the falling states are inherited but idle.
+- **Looks:** realistic is the default; `#style-water` or `#style-cel` in the URL switches the post-process.
 
 ## Running it
 
-Serve the folder with any static server (for example `python3 -m http.server`) and open `index.html`. Use the browser's phone emulation to test the touch controls.
+Serve the folder with any static server (for example `python3 -m http.server`) and open `index.html`. Use the browser's phone emulation to check the bottom-sheet layout.
 
-Desktop keys: WASD to move, Space to act, B to build, Q to splash.
+Space or Enter gnaws; everything else is the lodgebook.
 
 ## Notes
 

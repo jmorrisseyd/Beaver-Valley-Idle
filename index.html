@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Beaver Builder</title>
+<title>Beaver Valley Idle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
@@ -38,20 +38,47 @@
   .ibtn { pointer-events: auto; border: 1px solid var(--frame-line); font: inherit; color: inherit; cursor: pointer; width: 44px; display: flex; align-items: center; justify-content: center; font-size: 18px; padding: 0; transition: background .2s var(--ease); }
   .ibtn:hover { background: rgba(241, 239, 230, .14); }
   #btns { margin-left: auto; display: flex; gap: 7px; }
-  #hud2 { position: fixed; top: calc(74px + var(--safe-t)); left: calc(10px + var(--safe-l)); right: calc(10px + var(--safe-r)); display: flex; flex-wrap: wrap; gap: 7px; align-items: flex-start; pointer-events: none; z-index: 5; }
-  #goal { font-size: 14.5px; padding: 6px 13px; max-width: 76vw; transition: transform .4s var(--ease), opacity .5s, border-color .4s, color .4s; }
-  #damPill { min-width: 124px; }
   .gone { display: none !important; }
+  /* ---- the idle layer: readouts top left, the gnaw disc, the lodgebook ---- */
+  #stats { position: fixed; top: calc(10px + var(--safe-t)); left: calc(10px + var(--safe-l)); display: flex; flex-direction: column; gap: 7px; align-items: flex-start; pointer-events: none; z-index: 5; max-width: 64vw; }
+  #stats .pill { min-width: 152px; }
+  #logCount { font-family: var(--font-display); font-size: 26px; line-height: 1.02; }
+  #goal { font-size: 14.5px; padding: 6px 13px; transition: transform .4s var(--ease), opacity .5s, border-color .4s, color .4s; }
+  #topRight { position: fixed; top: calc(10px + var(--safe-t)); right: calc(10px + var(--safe-r)); display: flex; gap: 7px; z-index: 6; }
+  #gnaw { position: fixed; left: 50%; bottom: calc(26px + var(--safe-b)); transform: translateX(-50%); width: 132px; height: 132px; border-radius: 50%; border: none; background: var(--paper); color: var(--ink); font-family: var(--font-sc); font-weight: 500; font-size: 15px; letter-spacing: .12em; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 12px 34px rgba(0,0,0,.36); cursor: pointer; z-index: 8; transition: transform .09s var(--ease); touch-action: manipulation; }
+  #gnaw .ic { line-height: 0; font-size: 42px; }
+  #gnaw .ic .i { filter: drop-shadow(0 1px 1px rgba(29, 38, 32, .45)); }
+  #gnaw.hit { transform: translateX(-50%) scale(.93); }
+  #shop { position: fixed; z-index: 9; background: var(--paper); color: var(--ink); display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.45); transition: transform .35s var(--ease); }
+  #shop header { display: flex; align-items: baseline; justify-content: space-between; padding: 18px 20px 6px; }
+  #shop h2 { font-family: var(--font-display); font-weight: 400; font-size: 28px; margin: 0; letter-spacing: -.01em; }
+  #shop .x { background: none; border: none; font: inherit; font-size: 24px; line-height: 1; color: var(--ink-soft); cursor: pointer; padding: 0 2px; }
+  #shop .scroll { overflow-y: auto; padding: 0 20px calc(22px + var(--safe-b)); -webkit-overflow-scrolling: touch; }
+  @media (min-width: 820px) { #shop { top: 0; right: 0; bottom: 0; width: 376px; } #shop.closed { transform: translateX(100%); } }
+  @media (max-width: 819px) { #shop { left: 0; right: 0; bottom: 0; max-height: 74vh; border-radius: 20px 20px 0 0; } #shop.closed { transform: translateY(103%); } }
+  .secHead { font-family: var(--font-sc); font-weight: 700; font-size: 13px; letter-spacing: .16em; color: var(--ink-soft); margin: 20px 0 0; }
+  .row { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; background: none; border: 0; border-top: 1px solid var(--ink-line); padding: 11px 0; font: inherit; color: inherit; cursor: pointer; }
+  .row:first-of-type { border-top: 0; }
+  .row:disabled { opacity: .4; cursor: default; }
+  .row .ct { font-weight: 700; font-size: 17px; color: var(--ink-soft); min-width: 26px; text-align: right; font-variant-numeric: tabular-nums; }
+  .row .nm { flex: 1; min-width: 0; }
+  .row .nm b { display: block; font-weight: 500; font-size: 16px; }
+  .row .nm small { display: block; color: var(--ink-soft); font-size: 12.5px; line-height: 1.25; }
+  .row .pr { text-align: right; white-space: nowrap; }
+  .row .pr b { display: block; font-weight: 700; font-size: 15px; }
+  .row .pr small { color: var(--ink-soft); font-size: 12px; }
+  #upRow { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 0 2px; }
+  .up { border: 1px solid var(--ink-line); background: none; border-radius: 999px; padding: 7px 13px; font: inherit; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+  .up:disabled { opacity: .38; cursor: default; }
+  .flood { width: 100%; margin-top: 14px; background: var(--ink); color: var(--paper); border: 0; border-radius: 999px; padding: 12px; font: 700 15.5px var(--font-ui); cursor: pointer; }
+  .flood:disabled { background: none; color: var(--ink-soft); border: 1px solid var(--ink-line); cursor: default; }
+  .note { font-size: 13px; color: var(--ink-soft); line-height: 1.4; margin: 8px 0 0; }
   #goal.done { transform: scale(1.04); border-color: rgba(143, 179, 90, .6); color: #dceab9; }
   #toast { position: fixed; left: 50%; top: calc(116px + var(--safe-t)); transform: translateX(-50%) translateY(-6px); background: rgba(33, 28, 31, .72); -webkit-backdrop-filter: blur(9px); backdrop-filter: blur(9px); border: 1px solid var(--frame-line); color: var(--frame-ink); padding: 9px 18px; border-radius: 999px; font-size: 15px; text-align: center; max-width: 88vw; opacity: 0; transition: opacity .5s, transform .5s var(--ease); pointer-events: none; z-index: 6; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   #banner { position: fixed; left: 50%; top: 32%; transform: translate(-50%, -50%) scale(.82); opacity: 0; z-index: 9; pointer-events: none; text-align: center; color: var(--frame-ink); font-family: var(--font-display); font-size: 38px; line-height: 1.08; letter-spacing: -.012em; text-shadow: 0 2px 30px rgba(0,0,0,.55), 0 1px 3px rgba(0,0,0,.4); transition: transform .7s var(--ease), opacity .5s; white-space: nowrap; }
   #banner small { display: block; font-family: var(--font-ui); font-size: 16px; margin-top: 8px; white-space: normal; max-width: 86vw; margin-left: auto; margin-right: auto; color: var(--frame-dim); text-shadow: 0 1px 10px rgba(0,0,0,.5); }
   #banner.show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  #joy { position: fixed; width: 124px; height: 124px; margin: -62px 0 0 -62px; border-radius: 50%; background: rgba(241, 239, 230, .06); border: 1px solid rgba(241, 239, 230, .45); display: none; pointer-events: none; z-index: 7; }
-  #knob { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%; background: rgba(241, 239, 230, .82); }
-  #joyHint .i { margin-right: 6px; }
-  #joyHint { position: fixed; left: calc(24px + var(--safe-l)); bottom: calc(126px + var(--safe-b)); font-family: var(--font-sc); font-size: 14px; letter-spacing: .12em; color: var(--frame-ink); pointer-events: none; z-index: 4; text-shadow: 0 1px 10px rgba(0,0,0,.6); animation: bob 1.8s ease-in-out infinite; }
   @keyframes bob { 50% { transform: translateY(-5px); } }
 
   /* ---- action buttons ---- */
@@ -137,46 +164,42 @@
 <div id="game"></div>
 <div id="fx"></div>
 
-<div id="hud" class="hidden">
-  <div class="pill"><small>Logs</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-log"/></svg><span id="wood">0/6</span></span></div>
-  <div class="pill" id="wetPill"><small>Wetland</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg><span id="wet">0 m²</span></span><div class="bar"><i id="wetBar"></i></div></div>
-  <div id="btns">
-    <button class="pill ibtn" id="journalBtn" aria-label="Journal"><svg class="i" aria-hidden="true"><use href="#i-book"/></svg></button>
-    <button class="pill ibtn" id="zoomBtn" aria-label="Zoom"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
-    <button class="pill ibtn" id="mute" aria-label="Sound"><svg class="i" aria-hidden="true"><use href="#i-sound"/></svg></button>
-  </div>
-</div>
-<div id="hud2">
+<div id="stats">
+  <div class="pill"><small>Logs</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-log"/></svg><span id="logCount">0</span></span></div>
+  <div class="pill"><small>Each second</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-leaf"/></svg><span id="lpsOut">0</span></span></div>
+  <div class="pill" id="wetStat"><small>Wetland</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-dam"/></svg><span id="wetOut">0 m²</span></span></div>
   <div class="pill hidden" id="goal"></div>
-  <div class="pill gone" id="damPill"><small>Dam</small><span class="val"><svg class="i" aria-hidden="true"><use href="#i-dam"/></svg><span id="damState">Sound</span></span><div class="bar"><i id="damBar"></i></div></div>
+</div>
+<div id="topRight">
+  <button class="pill ibtn" id="zoomBtn" aria-label="Zoom"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
+  <button class="pill ibtn" id="mute" aria-label="Sound"><svg class="i" aria-hidden="true"><use href="#i-sound"/></svg></button>
+  <button class="pill ibtn" id="shopBtn" aria-label="Lodgebook"><svg class="i" aria-hidden="true"><use href="#i-book"/></svg></button>
 </div>
 <div id="toast"></div>
 <div id="banner"></div>
-<div id="joy"><div id="knob"></div></div>
-<div id="joyHint" style="display:none"><svg class="i" aria-hidden="true"><use href="#i-touch"/></svg>Drag anywhere to wander</div>
-<button id="slap" class="btn hidden"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-splash"/></svg></span><span>Splash</span></button>
-<button id="build" class="btn hidden"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-log"/></svg></span><span id="buildLabel">Build dam</span></button>
-<button id="act" class="btn off hidden"><span class="ic" id="actIcon"><svg class="i" aria-hidden="true"><use href="#i-tooth"/></svg></span><span id="actLabel">Chew</span></button>
+
+<button id="gnaw" aria-label="Gnaw"><span class="ic"><svg class="i" aria-hidden="true"><use href="#i-tooth"/></svg></span><span>Gnaw</span></button>
+
+<aside id="shop" class="closed">
+  <header><h2>Lodgebook</h2><button class="x" id="shopClose" aria-label="Close">&times;</button></header>
+  <div class="scroll">
+    <p class="secHead">Sharpenings</p>
+    <div id="upRow"></div>
+    <p class="secHead">The valley at work</p>
+    <div id="buyList"></div>
+    <p class="secHead">Flood</p>
+    <div id="floodBox"></div>
+  </div>
+</aside>
 
 <div class="overlay" id="title">
   <div class="card">
-    <p class="eyebrow">A patient game about water</p>
+    <p class="eyebrow">An idle game about water</p>
     <h1>Beaver <i>Valley</i></h1>
-    <p class="lede">A quiet stream, a valley of trees, and all the time in the world.</p>
-    <ul>
-      <li><span><svg class="i" aria-hidden="true"><use href="#i-tooth"/></svg></span><span>Chew trees for logs.</span></li>
-      <li><span><svg class="i" aria-hidden="true"><use href="#i-log"/></svg></span><span>Build dams anywhere. Water backs up and fills the land behind them.</span></li>
-      <li><span><svg class="i" aria-hidden="true"><use href="#i-lodge"/></svg></span><span>Build a lodge in deep water and raise a family.</span></li>
-      <li><span><svg class="i" aria-hidden="true"><use href="#i-duck"/></svg></span><span>Your wetland draws in wildlife. Fill your journal.</span></li>
-    </ul>
-    <div id="startBtns"><button id="newBtn">New valley</button></div>
-    <p><button class="ghost" id="codeLink">I have a save code</button></p>
-    <div id="codeBox" style="display:none"><textarea id="titleCode" placeholder="Paste your save code here"></textarea><button class="alt" id="titleLoad">Load valley</button><p class="muted" id="titleMsg"></p></div>
-    <p class="muted">Desktop: WASD to move, Space to act, B to build, Q to splash</p>
+    <p class="lede">Gnaw a little. Then let the valley work: kits, dams, ponds and herons carry on without you, and keep going while you are away.</p>
+    <div id="startBtns"><button id="newBtn">Begin</button></div>
+    <p class="muted">Tap the disc, or hold space. Everything else comes from the lodgebook.</p>
   </div>
-</div>
-<div class="overlay hide" id="journal">
-  <div class="card" id="journalCard"></div>
 </div>
 
 <script type="module">
@@ -2461,14 +2484,6 @@ function kitDamSpot() {
   const i = pick(opts);
   return { x: nodeX(i) + rand(-0.6, 0.6), z: nodeZ(i) + SP * 0.9 };
 }
-const ghostMat = new THREE.MeshBasicMaterial({ color: 0x9fe39a, transparent: true, opacity: 0.4, depthWrite: false });
-const ghost = new THREE.Mesh(new THREE.BoxGeometry(SP * 0.92, DAM_STEP, SP * 0.92), ghostMat);
-ghost.renderOrder = 5;
-ghost.visible = false;
-scene.add(ghost);
-const ghostEdge = new THREE.LineSegments(new THREE.EdgesGeometry(ghost.geometry), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8 }));
-ghost.add(ghostEdge);
-
 // ---------- lodge ----------
 const lodgeGroup = new THREE.Group();
 scene.add(lodgeGroup);
@@ -2527,15 +2542,13 @@ function addKit() {
 // Journal: goals and discoveries
 // ======================================================================
 const GOALS = [
-  ['tree', 'Chew down a tree', 'Hold the big button next to a tree.'],
-  ['dam', 'Build a dam on the stream', 'Carry logs to the stream. The green box shows where they’ll go.'],
-  ['pond', 'Make a pond: 40 m² of wetland', 'Close off the stream so water backs up. Make the dam wider than the channel.'],
-  ['raise', 'Raise a dam section to full height', 'Tap Build on the same spot to stack it higher.'],
-  ['lodge', 'Build a lodge in deep water', 'Swim somewhere at least a metre deep with logs.'],
-  ['w200', 'Grow the wetland to 200 m²', 'Wider, taller dams flood more land.'],
-  ['kits', 'Raise 3 kits', 'Kits arrive as the lodge grows and the wetland spreads.'],
-  ['w500', 'Grow the wetland to 500 m²', 'Try a second dam further up or down the valley.'],
-  ['w1000', 'Grow the wetland to 1,000 m²', 'A whole valley of ponds.'],
+  ['dam', 'Dam the stream', 'Buy a dam section from the lodgebook.'],
+  ['pond', 'Make a pond: 40 m² of wetland', 'More dam sections, more water held back.'],
+  ['lodge', 'Build a lodge', 'Somewhere dry in the middle of the pond.'],
+  ['kits', 'Raise 3 kits', 'They mend the dam while you gnaw.'],
+  ['w200', 'Grow the wetland to 200 m²', 'Widen the dam, then start another downstream.'],
+  ['w500', 'Grow the wetland to 500 m²', 'A chain of ponds down the valley.'],
+  ['w1000', 'Grow the wetland to 1,000 m²', 'A whole valley of still water.'],
 ];
 const icon = (n) => `<svg class="i" aria-hidden="true"><use href="#i-${n}"/></svg>`;
 const DISC = {
@@ -2575,49 +2588,6 @@ function renderGoal() {
   const g = GOALS.find((x) => !goals[x[0]]);
   el.innerHTML = g ? `${icon('target')} ${g[1]}` : `${icon('leaf')} Your valley is thriving`;
 }
-function openJournal() {
-  const done = GOALS.filter((g) => goals[g[0]]).length, found = Object.keys(DISC).filter((k) => disc[k]).length;
-  let h = `<h1 style="font-size:30px">📖 Journal</h1><p class="muted">Day ${day} · ${Math.round(area)} m² of wetland · ${trees.length} trees</p>`;
-  const sections = [...damMeshes.keys()].filter((i) => dam[i]);
-  if (sections.length) {
-    const w = worstDam();
-    const state = w > 0.6 ? 'breaking up, patch it now' : w > LEAK_AT ? 'leaking, needs patching' : w > PATCH_AT ? 'starting to wear' : 'sound';
-    h += `<p class="muted">Dam · ${sections.length} section${sections.length > 1 ? 's' : ''} · ${state}${kits.length ? ` · ${kits.length} kit${kits.length > 1 ? 's' : ''} mending` : ''}</p>`;
-  }
-  h += `<h2>Goals · ${done}/${GOALS.length}</h2><ul>`;
-  for (const [k, name, hint] of GOALS) h += `<li class="${goals[k] ? '' : 'todo'}"><span>${goals[k] ? '✅' : '◻️'}</span><span>${name}${goals[k] ? '' : `<small>${hint}</small>`}</span></li>`;
-  h += `</ul><h2>Wildlife & plants · ${found}/${Object.keys(DISC).length}</h2><ul>`;
-  for (const k of Object.keys(DISC)) {
-    const [ic, name, text] = DISC[k];
-    h += disc[k] ? `<li><span>${ic}</span><span>${name}<small>${text}</small></span></li>` : `<li class="todo"><span>?</span><span>Not yet seen</span></li>`;
-  }
-  h += `</ul><h2>Save code</h2><p class="muted" style="text-align:left">Your valley also saves itself on this device. To carry it somewhere else or keep a backup, copy this code. Paste it on the start screen to come back.</p>
-    <textarea id="codeOut" readonly placeholder="Tap “Make code”"></textarea>
-    <button class="alt" id="codeMake">Make code</button><button class="ghost" id="codeCopy">Copy</button>
-    <h2>Load a code</h2><textarea id="codeIn" placeholder="Paste a save code here"></textarea>
-    <button class="ghost" id="codeLoad">Load this valley</button><p class="muted" id="codeMsg"></p>
-    <h2>Look</h2><div><button class="ghost${STYLE_ID === 0 ? ' on' : ''}" id="lookReal">Realistic</button><button class="ghost${STYLE_ID === 2 ? ' on' : ''}" id="lookWater">Watercolour</button></div>
-    <button id="jClose">Back to the valley</button><br><button class="ghost" id="jNew">Start a new valley</button>`;
-  $('journalCard').innerHTML = h;
-  $('journal').classList.remove('hide');
-  $('jClose').onclick = () => $('journal').classList.add('hide');
-  $('codeMake').onclick = async () => { $('codeOut').value = await makeCode(); $('codeMsg').textContent = ''; };
-  $('codeCopy').onclick = async () => {
-    if (!$('codeOut').value) $('codeOut').value = await makeCode();
-    $('codeCopy').textContent = (await copyText($('codeOut').value, $('codeOut'))) ? 'Copied' : 'Select & copy';
-  };
-  $('codeLoad').onclick = async () => {
-    try { const data = await readCode($('codeIn').value); $('journal').classList.add('hide'); startGame(data); }
-    catch (e) { $('codeMsg').textContent = e.message && e.message.startsWith('That') ? e.message : 'Couldn’t read that code. Check it was copied in full.'; }
-  };
-  $('lookReal').onclick = () => { setStyle(0); openJournal(); };
-  $('lookWater').onclick = () => { setStyle(2); openJournal(); };
-  $('jNew').onclick = () => {
-    const b = $('jNew');
-    if (b.dataset.sure) { $('journal').classList.add('hide'); newValley(); }
-    else { b.dataset.sure = '1'; b.textContent = 'Tap again to leave this valley'; }
-  };
-}
 
 // ======================================================================
 // UI helpers
@@ -2649,135 +2619,22 @@ function popup(text, x, y, z, cls = '') {
   if (pops.length > 20) { const o = pops.shift(); o.el.remove(); }
 }
 const MILESTONES = [40, 100, 200, 350, 500, 750, 1000, 1500, 2000];
-function updateHUD() {
-  $('wood').textContent = `${carry}/${CAP}`;
-  areaShown += (area - areaShown) * 0.1;
-  $('wet').textContent = `${Math.round(areaShown)} m²`;
-  const next = MILESTONES.find((m) => m > area) || MILESTONES[MILESTONES.length - 1];
-  const prev = [...MILESTONES].reverse().find((m) => m <= area) || 0;
-  $('wetBar').style.width = `${clamp((area - prev) / (next - prev), 0, 1) * 100}%`;
-  // dam condition: the bar is how much of the worst section is still sound
-  const sections = damMeshes.size;
-  damPill.classList.toggle('gone', !sections);
-  if (sections) {
-    const w = worstDam();
-    damBar.style.width = `${Math.round((1 - w) * 100)}%`;
-    const st = w > 0.6 ? 'Breaking' : w > LEAK_AT ? 'Leaking' : w > PATCH_AT ? 'Wearing' : 'Sound';
-    if (st !== damShown) {
-      damShown = st;
-      damState.textContent = st;
-      damBar.style.background = st === 'Breaking' ? '#d4836f' : st === 'Leaking' ? '#e0b45f' : st === 'Wearing' ? '#cfc272' : '';
-      damPill.style.borderColor = st === 'Breaking' ? 'rgba(212, 131, 111, .55)' : st === 'Leaking' ? 'rgba(224, 180, 95, .5)' : '';
-    }
-  }
-}
-let damShown = '';
 
 // ======================================================================
 // Input
 // ======================================================================
-const keys = {};
-let actHeld = false, slapReq = false, buildReq = false;
-addEventListener('keydown', (e) => {
-  if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
-  if (e.repeat && (e.code === 'KeyB' || e.code === 'KeyQ')) return;
-  keys[e.code] = true;
-  if (e.code === 'Space' || e.code === 'KeyE') { actHeld = true; e.preventDefault(); }
-  if (e.code === 'KeyQ') slapReq = true;
-  if (e.code === 'KeyB') buildReq = true;
-});
-addEventListener('keyup', (e) => { keys[e.code] = false; if (e.code === 'Space' || e.code === 'KeyE') actHeld = false; });
-let joyId = null, joyOx = 0, joyOy = 0;
-const joyV = { x: 0, y: 0 };
-const joy = $('joy'), knob = $('knob'), actBtn = $('act'), slapBtn = $('slap'), buildBtn = $('build');
-const damPill = $('damPill'), damBar = $('damBar'), damState = $('damState');
-renderer.domElement.addEventListener('pointerdown', (e) => {
-  if (joyId !== null || !running) return;
-  joyId = e.pointerId; joyOx = e.clientX; joyOy = e.clientY;
-  joy.style.left = joyOx + 'px'; joy.style.top = joyOy + 'px'; joy.style.display = 'block';
-  knob.style.transform = 'translate(0,0)';
-  $('joyHint').style.display = 'none';
-});
-addEventListener('pointermove', (e) => {
-  if (e.pointerId !== joyId) return;
-  let dx = e.clientX - joyOx, dy = e.clientY - joyOy;
-  const d = Math.hypot(dx, dy), max = 52;
-  if (d > max) { dx *= max / d; dy *= max / d; }
-  joyV.x = dx / max; joyV.y = dy / max;
-  knob.style.transform = `translate(${dx}px,${dy}px)`;
-});
-const endJoy = (e) => { if (e.pointerId !== joyId) return; joyId = null; joyV.x = joyV.y = 0; joy.style.display = 'none'; };
-addEventListener('pointerup', endJoy);
-addEventListener('pointercancel', endJoy);
-actBtn.addEventListener('pointerdown', (e) => { e.preventDefault(); actHeld = true; actBtn.classList.add('held'); try { actBtn.setPointerCapture(e.pointerId); } catch (_) {} });
-const endAct = () => { actHeld = false; actBtn.classList.remove('held'); };
-actBtn.addEventListener('pointerup', endAct);
-actBtn.addEventListener('pointercancel', endAct);
-actBtn.addEventListener('lostpointercapture', endAct);
-const tapBtn = (b, fn) => b.addEventListener('pointerdown', (e) => { e.preventDefault(); fn(); b.classList.add('held'); setTimeout(() => b.classList.remove('held'), 120); });
-tapBtn(slapBtn, () => { slapReq = true; });
-tapBtn(buildBtn, () => { buildReq = true; });
-addEventListener('contextmenu', (e) => e.preventDefault());
-const ZOOMS = [0.8, 1.1, 1.55];
-let zoomI = 1, zoom = 1.1;
+const ZOOMS = [0.95, 1.3, 1.8];
+let zoomI = 1, zoom = 1.3;
 $('zoomBtn').onclick = () => { zoomI = (zoomI + 1) % ZOOMS.length; };
-addEventListener('wheel', (e) => { zoom = clamp(zoom + e.deltaY * 0.001, 0.6, 1.8); zoomI = -1; }, { passive: true });
-$('journalBtn').onclick = openJournal;
+addEventListener('wheel', (e) => { zoom = clamp(zoom + e.deltaY * 0.001, 0.7, 2.2); zoomI = -1; }, { passive: true });
+addEventListener('contextmenu', (e) => e.preventDefault());
 $('mute').onclick = () => { Snd.setMuted(!Snd.muted); $('mute').innerHTML = icon(Snd.muted ? 'mute' : 'sound'); try { localStorage.setItem('beaverMute', Snd.muted ? '1' : '0'); } catch (_) {} };
 try { if (localStorage.getItem('beaverMute') === '1') { Snd.muted = true; $('mute').innerHTML = icon('mute'); } } catch (_) {}
+
 
 // ======================================================================
 // Save / load
 // ======================================================================
-const SAVE_KEY = 'beaverValley1';
-function snapshot() {
-  const dams = [], worn = [];
-  for (let i = 0; i < NN; i++) if (dam[i]) { dams.push(i, dam[i]); if (wear[i] > 0.02) worn.push(i, Math.round(wear[i] * 100)); }
-  return { seed, dams, worn, felled: [...felled], snagged: [...snagged], carry, lodge: lodge && { x: lodge.x, z: lodge.z, tier: lodge.tier, progress: lodge.progress }, goals: { ...goals }, disc: { ...disc }, dayT, day, kits: kits.length, px: player.pos.x, pz: player.pos.z };
-}
-function save() {
-  if (!running) return;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(snapshot())); } catch (_) {}
-}
-// --- portable save codes: compact JSON → deflate → base64url ---
-const GOAL_KEYS = GOALS.map((g) => g[0]), DISC_KEYS = Object.keys(DISC);
-const toBits = (obj, keys) => keys.reduce((a, k, i) => a | (obj[k] ? 1 << i : 0), 0);
-const fromBits = (n, keys) => Object.fromEntries(keys.filter((k, i) => n & (1 << i)).map((k) => [k, true]));
-const deltas = (arr) => { const a = [...arr].sort((x, y) => x - y); return a.map((v, i) => (i ? v - a[i - 1] : v)); };
-const undeltas = (d) => { let acc = 0; return d.map((v, i) => (acc = i ? acc + v : v)); };
-function b64url(bytes) { let s = ''; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
-function unb64url(str) { str = str.replace(/-/g, '+').replace(/_/g, '/'); while (str.length % 4) str += '='; const bin = atob(str); const b = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); return b; }
-async function pipeBytes(bytes, stream) { return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
-async function makeCode() {
-  const st = snapshot();
-  const d = [];
-  let last = 0;
-  for (let k = 0; k < st.dams.length; k += 2) { d.push(st.dams[k] - last, st.dams[k + 1]); last = st.dams[k]; }
-  const o = { v: 1, s: st.seed, d, f: deltas(st.felled), n: deltas(st.snagged), c: st.carry,
-    l: st.lodge ? [Math.round(st.lodge.x * 10), Math.round(st.lodge.z * 10), st.lodge.tier, st.lodge.progress] : 0,
-    g: toBits(st.goals, GOAL_KEYS), k: toBits(st.disc, DISC_KEYS), t: Math.round(st.dayT * 1000), y: st.day, kn: st.kits, p: [Math.round(st.px * 10), Math.round(st.pz * 10)], w: st.worn };
-  const raw = new TextEncoder().encode(JSON.stringify(o));
-  try { if (typeof CompressionStream !== 'undefined') return 'BV1-' + b64url(await pipeBytes(raw, new CompressionStream('deflate-raw'))); } catch (_) {}
-  return 'BV0-' + b64url(raw);
-}
-async function readCode(str) {
-  const m = String(str).replace(/\s+/g, '').match(/^BV([01])-([A-Za-z0-9_-]+)$/);
-  if (!m) throw new Error('That doesn’t look like a Beaver Valley code.');
-  let bytes = unb64url(m[2]);
-  if (m[1] === '1') bytes = await pipeBytes(bytes, new DecompressionStream('deflate-raw'));
-  const o = JSON.parse(new TextDecoder().decode(bytes));
-  const dams = [];
-  let idx = 0;
-  for (let k = 0; k < o.d.length; k += 2) { idx += o.d[k]; dams.push(idx, o.d[k + 1]); }
-  return { seed: o.s, dams, felled: undeltas(o.f), snagged: undeltas(o.n), carry: o.c,
-    lodge: o.l ? { x: o.l[0] / 10, z: o.l[1] / 10, tier: o.l[2], progress: o.l[3] } : null,
-    goals: fromBits(o.g, GOAL_KEYS), disc: fromBits(o.k, DISC_KEYS), dayT: o.t / 1000, day: o.y, kits: o.kn, px: o.p[0] / 10, pz: o.p[1] / 10, worn: o.w || [] };
-}
-async function copyText(text, ta) {
-  try { await navigator.clipboard.writeText(text); return true; } catch (_) {}
-  try { ta.focus(); ta.select(); return document.execCommand('copy'); } catch (_) { return false; }
-}
-function loadSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)); } catch (_) { return null; } }
 
 // ======================================================================
 // World setup
@@ -2837,40 +2694,6 @@ function buildWorld(data) {
   if (data) for (let k = 0; k < 400; k++) growPlants(true);
   updateReeds();
   rainT = rand(150, 260);
-}
-function startGame(data) {
-  Snd.init();
-  buildWorld(data);
-  $('title').classList.add('hide');
-  for (const id of ['hud', 'goal', 'act', 'slap']) $(id).classList.remove('hidden');
-  running = true;
-  renderGoal();
-  if (!data) {
-    $('joyHint').style.display = 'block';
-    setTimeout(() => toast(`Find a tree and hold ${icon('tooth')} to chew it down`, 4000), 800);
-  } else toast(`Welcome back to your valley ${icon('leaf')}`, 2600);
-}
-function newValley() { try { localStorage.removeItem(SAVE_KEY); } catch (_) {} startGame(null); }
-{
-  const sv = loadSave();
-  if (sv) {
-    $('startBtns').innerHTML = `<button id="contBtn" class="alt">Continue</button><button id="newBtn" class="ghost">New valley</button>`;
-    $('contBtn').onclick = () => startGame(sv);
-  }
-  $('newBtn').onclick = () => newValley();
-  $('codeLink').onclick = () => { $('codeBox').style.display = 'block'; $('codeLink').style.display = 'none'; };
-  $('titleLoad').onclick = async () => {
-    try { startGame(await readCode($('titleCode').value)); }
-    catch (e) { $('titleMsg').textContent = e.message && e.message.startsWith('That') ? e.message : 'Couldn’t read that code. Check it was copied in full.'; }
-  };
-}
-function setStyle(id) {
-  STYLE_ID = id;
-  postU.uStyle.value = id;
-  waterMat.uniforms.uStyle.value = id;
-  skyU.uStyle.value = id;
-  makeRT();
-  try { localStorage.setItem('beaverStyle', id === 2 ? 'watercolour' : 'realistic'); } catch (_) {}
 }
 
 // ======================================================================
@@ -3057,11 +2880,337 @@ function evalSky(t) {
 }
 
 // ======================================================================
+// The idle layer: logs, the lodgebook, and what each purchase puts in the valley
+// ======================================================================
+const IDLE_KEY = 'beaverValleyIdle1', OFFLINE_CAP = 8 * 3600, OFFLINE_RATE = 0.5;
+let logs = 0, logsAll = 0, clicks = 0, floods = 0, seenAt = Date.now(), saveT2 = 0, shopDirty = true;
+const owned = {}, ups = {};
+
+// Each one earns logs a second and leaves something behind in the valley.
+const BUILDINGS = [
+  { k: 'sap',   name: 'Sapling',      hint: 'A willow whip rooted by the water.',        base: 15,     lps: 0.1 },
+  { k: 'dam',   name: 'Dam section',  hint: 'Sticks and mud packed across the channel.', base: 110,    lps: 1 },
+  { k: 'lodge', name: 'Lodge room',   hint: 'Somewhere dry in the middle of it all.',    base: 1300,   lps: 8 },
+  { k: 'kit',   name: 'Kit',          hint: 'Small, tireless, always underfoot.',        base: 14000,  lps: 47 },
+  { k: 'grove', name: 'Willow grove', hint: 'A whole stand, coppiced and regrown.',      base: 160000, lps: 260 },
+  { k: 'pond',  name: 'Pond',         hint: 'Still water, lilies, a heron waiting.',     base: 1.9e6,  lps: 1400 },
+  { k: 'marsh', name: 'Marsh',        hint: 'Reeds and sedge to the far bank.',          base: 2.2e7,  lps: 7800 },
+  { k: 'bend',  name: 'River bend',   hint: 'The valley rearranges itself around you.',  base: 2.8e8,  lps: 44000 },
+];
+const UPGRADES = [
+  { k: 'teeth1', name: 'Sharper teeth',   hint: 'Gnawing counts double.',       cost: 120,    need: () => clicks >= 12,      click: 2 },
+  { k: 'mud',    name: 'Mud packing',     hint: 'Dam sections hold twice as much.', cost: 900, need: () => (owned.dam || 0) >= 5,  mul: { dam: 2 } },
+  { k: 'teeth2', name: 'Chisel teeth',    hint: 'Gnawing counts double again.', cost: 1800,   need: () => clicks >= 60,      click: 2 },
+  { k: 'bark',   name: 'Willow bark',     hint: 'Saplings give three times over.', cost: 2600, need: () => (owned.sap || 0) >= 10, mul: { sap: 3 } },
+  { k: 'warm',   name: 'Warm lodge',      hint: 'Lodge rooms earn double.',     cost: 11000,  need: () => (owned.lodge || 0) >= 5, mul: { lodge: 2 } },
+  { k: 'teeth3', name: 'Iron teeth',      hint: 'Gnawing counts three times.',  cost: 40000,  need: () => clicks >= 200,     click: 3 },
+  { k: 'supper', name: 'Family suppers',  hint: 'Kits work twice as hard.',     cost: 90000,  need: () => (owned.kit || 0) >= 5,  mul: { kit: 2 } },
+  { k: 'side',   name: 'Side channels',   hint: 'Everything earns a quarter more.', cost: 500000, need: () => (owned.pond || 0) >= 3, all: 1.25 },
+  { k: 'coppice',name: 'Coppice rotation',hint: 'Groves earn double.',          cost: 1.2e6,  need: () => (owned.grove || 0) >= 10, mul: { grove: 2 } },
+  { k: 'plain',  name: 'Floodplain',      hint: 'Everything earns 40% more.',   cost: 8e6,    need: () => (owned.marsh || 0) >= 3, all: 1.4 },
+  { k: 'moon',   name: 'Moonlight shift', hint: 'Everything earns half again.', cost: 4e7,    need: () => logsAll >= 6e7,    all: 1.5 },
+];
+
+const UNITS = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx'];
+function fmt(n) {
+  if (!isFinite(n)) return '∞';
+  if (n < 1000) return n < 10 ? String(Math.round(n * 10) / 10) : String(Math.round(n));
+  let u = 0;
+  while (n >= 1000 && u < UNITS.length - 1) { n /= 1000; u++; }
+  return (n < 10 ? n.toFixed(2) : n < 100 ? n.toFixed(1) : String(Math.round(n))) + UNITS[u];
+}
+const costOf = (b) => Math.ceil(b.base * Math.pow(1.15, owned[b.k] || 0));
+const floodMul = () => 1 + floods * 0.1;
+function allMul() {
+  let m = floodMul();
+  for (const u of UPGRADES) if (ups[u.k] && u.all) m *= u.all;
+  return m;
+}
+function mulFor(k) {
+  let m = 1;
+  for (const u of UPGRADES) if (ups[u.k] && u.mul && u.mul[k]) m *= u.mul[k];
+  return m;
+}
+function lpsOf() {
+  let s = 0;
+  for (const b of BUILDINGS) s += (owned[b.k] || 0) * b.lps * mulFor(b.k);
+  return s * allMul();
+}
+function clickPower() {
+  let c = 1;
+  for (const u of UPGRADES) if (ups[u.k] && u.click) c *= u.click;
+  return (1 + lpsOf() * 0.03) * c * floodMul();
+}
+
+// ---------- what the valley does about it ----------
+let damSteps = null, damDone = 0, sapDone = 0;
+function damStepList() {
+  if (damSteps) return damSteps;
+  // one dam at a time: span the channel, then raise it, then start the next one down
+  const rows = [16, 28, 4, 40, -8, 52], out = [];
+  for (const z of rows) {
+    const xc = riverCenter(z);
+    for (let lvl = 0; lvl < DAM_MAX; lvl++) for (let d = 0; d < 9; d++) {
+      const off = d === 0 ? 0 : (d % 2 ? 1 : -1) * Math.ceil(d / 2);
+      const i = idxOf(xc + off * SP, z);
+      if (i >= 0) out.push(i);
+    }
+  }
+  return (damSteps = out);
+}
+// how many dam steps the current holdings are worth: ponds and marshes widen it too
+const damTarget = () => (owned.dam || 0) + (owned.pond || 0) * 3 + (owned.marsh || 0) * 5 + (owned.bend || 0) * 8;
+function placeDams(n, quiet) {
+  const steps = damStepList();
+  n = Math.min(n, steps.length);
+  let any = false;
+  for (; damDone < n; damDone++) {
+    const i = steps[damDone];
+    if (dam[i] >= DAM_MAX) continue;
+    dam[i]++; wear[i] = 0; any = true;
+    if (!quiet) buildDamMesh(i);
+  }
+  if (any && !quiet) { computeWater(); completeGoal('dam'); }
+  return any;
+}
+const sapTarget = () => (owned.sap || 0) + (owned.grove || 0) * 6 + (owned.marsh || 0) * 3;
+function placeSaplings(n) {
+  n = Math.min(n, 150);
+  for (; sapDone < n; sapDone++) if (trees.length < 220) spawnSapling();
+}
+function placeLodge() {
+  const n = owned.lodge || 0;
+  if (!n) return;
+  if (!lodge) {
+    const z = 13, x = riverCenter(z);
+    lodge = { x, z, tier: 0, progress: 0, r: 1 };
+  }
+  const tier = Math.min(LODGE_COST.length, Math.floor((n - 1) / 4));
+  if (tier !== lodge.tier || !lodgeGroup.children.length) { lodge.tier = tier; lodge.progress = 0; buildLodge(); }
+  if (n >= 1) completeGoal('lodge');
+}
+const kitTarget = () => Math.min(14, (owned.kit || 0) + Math.floor((owned.bend || 0) / 2));
+function placeKits() {
+  if (!lodge) return;
+  while (kits.length < kitTarget()) addKit();
+  if (kits.length >= 3) completeGoal('kits');
+}
+// bring the valley in line with what has been bought
+function applyWorld(quiet) {
+  placeDams(damTarget(), quiet);
+  placeLodge();
+  placeKits();
+  placeSaplings(sapTarget());
+}
+
+// ---------- buying ----------
+function buy(b) {
+  const c = costOf(b);
+  if (logs < c) return;
+  logs -= c;
+  owned[b.k] = (owned[b.k] || 0) + 1;
+  Snd.store();
+  applyWorld(false);
+  shopDirty = true;
+  renderShop();
+}
+function buyUp(u) {
+  if (ups[u.k] || logs < u.cost) return;
+  logs -= u.cost;
+  ups[u.k] = 1;
+  Snd.goal();
+  toast(`${icon('check')} ${u.name}. ${u.hint}`, 3000);
+  renderShop();
+}
+
+// ---------- the gnaw ----------
+let gnawSnd = 0;
+function gnaw() {
+  if (!running) return;
+  const g = clickPower();
+  logs += g; logsAll += g; clicks++;
+  const bx = player.pos.x, by = player.y + 0.75, bz = player.pos.z;
+  burst(bx, by, bz, 2, 'wood', 1.3, 2.4);
+  if (clicks % 3 === 1) popup(`+${fmt(g)}`, bx, by + 0.7, bz);
+  if (gnawSnd <= 0) { gnawSnd = 0.07; Snd.chomp(); }
+  chewFx = 0.3; chewTree = nearestTree(3.4);
+  const btn = $('gnaw');
+  btn.classList.add('hit');
+  setTimeout(() => btn.classList.remove('hit'), 90);
+  if (clicks === 12 || logsAll > 60) shopDirty = true;
+}
+
+// ---------- flooding the valley: start again, keep a mark ----------
+const floodMarks = () => Math.floor(Math.sqrt(logsAll / 1e6));
+function flood() {
+  const gain = floodMarks() - floods;
+  if (gain < 1) return;
+  floods += gain;
+  logs = 0; logsAll = 0; clicks = 0;
+  for (const k of Object.keys(owned)) delete owned[k];
+  for (const k of Object.keys(ups)) delete ups[k];
+  damDone = 0; sapDone = 0; lodge = null;
+  startWorld(null);
+  banner(`${icon('splash')} The valley floods<small>${floods} high-water mark${floods > 1 ? 's' : ''} · everything earns ${Math.round((floodMul() - 1) * 100)}% more</small>`, 4200);
+  renderShop();
+}
+
+// ---------- the lodgebook ----------
+function renderShop() {
+  const upRow = $('upRow');
+  upRow.innerHTML = '';
+  let shown = 0;
+  for (const u of UPGRADES) {
+    if (ups[u.k] || !u.need()) continue;
+    shown++;
+    const b = document.createElement('button');
+    b.className = 'up';
+    b.dataset.cost = u.cost;
+    b.innerHTML = `${u.name} · <b>${fmt(u.cost)}</b>`;
+    b.title = u.hint;
+    b.onclick = () => buyUp(u);
+    upRow.appendChild(b);
+  }
+  if (!shown) upRow.innerHTML = '<p class="note">Nothing to sharpen yet. Keep gnawing.</p>';
+  const list = $('buyList');
+  list.innerHTML = '';
+  for (const b of BUILDINGS) {
+    const n = owned[b.k] || 0;
+    if (!n && b.base > Math.max(logsAll, 15) * 2.5) continue;      // keep the far future out of sight
+    const row = document.createElement('button');
+    row.className = 'row';
+    row.dataset.cost = costOf(b);
+    row.innerHTML = `<span class="nm"><b>${b.name}</b><small>${b.hint}</small></span>` +
+      `<span class="pr"><b>${fmt(costOf(b))}</b><small>${fmt(b.lps * mulFor(b.k) * allMul())}/s each</small></span>` +
+      `<span class="ct">${n || ''}</span>`;
+    row.onclick = () => buy(b);
+    list.appendChild(row);
+  }
+  const fb = $('floodBox');
+  const gain = floodMarks() - floods;
+  fb.innerHTML = `<p class="note">Flooding the valley washes away your logs and everything you have bought, and leaves a high-water mark behind. Each mark makes the next valley earn 10% more.</p>` +
+    `<button class="flood" id="floodBtn"${gain < 1 ? ' disabled' : ''}>${gain < 1 ? `Flood the valley · needs ${fmt((floods + 1) * (floods + 1) * 1e6)} logs all told` : `Flood the valley · +${gain} mark${gain > 1 ? 's' : ''}`}</button>` +
+    (floods ? `<p class="note">${floods} mark${floods > 1 ? 's' : ''} so far, earning ${Math.round((floodMul() - 1) * 100)}% more.</p>` : '');
+  const fbtn = $('floodBtn');
+  if (fbtn) fbtn.onclick = flood;
+  refreshAfford();
+}
+function refreshAfford() {
+  for (const el of document.querySelectorAll('#buyList .row, #upRow .up')) el.disabled = logs < +el.dataset.cost;
+}
+let statT = 0;
+function refreshStats() {
+  statT -= 1;
+  $('logCount').textContent = fmt(logs);
+  if (statT > 0) return;
+  statT = 12;
+  $('lpsOut').textContent = fmt(lpsOf());
+  areaShown += (area - areaShown) * 0.2;
+  $('wetOut').textContent = `${Math.round(areaShown)} m²`;
+  refreshAfford();
+  if (shopDirty) { shopDirty = false; renderShop(); }
+}
+
+// ---------- the clock ----------
+function idleTick(dt) {
+  logs += lpsOf() * dt;
+  logsAll += lpsOf() * dt;
+  gnawSnd -= dt;
+  saveT2 -= dt;
+  if (saveT2 <= 0) { saveT2 = 12; save(); }
+}
+
+// ---------- saving, and what the valley did while you were away ----------
+function snapshot() {
+  return { v: 1, seed, logs, logsAll, clicks, floods, owned: { ...owned }, ups: { ...ups },
+    dayT, day, disc: { ...disc }, goals: { ...goals }, seen: Date.now() };
+}
+function save() { if (running) try { localStorage.setItem(IDLE_KEY, JSON.stringify(snapshot())); } catch (_) {} }
+function loadSave() { try { return JSON.parse(localStorage.getItem(IDLE_KEY)); } catch (_) { return null; } }
+
+function startWorld(s) {
+  damSteps = null; damDone = 0; sapDone = 0; lodge = null;
+  buildWorld({ seed: s && s.seed ? s.seed : Math.floor(Math.random() * 1e9), dams: [], worn: [], felled: [], snagged: [],
+    carry: 0, lodge: null, goals: s ? s.goals || {} : {}, disc: s ? s.disc || {} : {},
+    dayT: s ? s.dayT : 0.08, day: s ? s.day : 1, kits: 0 });
+  placeDams(damTarget(), true);
+  for (let i = 0; i < NN; i++) if (dam[i]) buildDamMesh(i);
+  computeWater(true);
+  updateWaterMesh();
+  measureArea();
+  areaShown = area;
+  for (let k = 0; k < 300; k++) growPlants(true);
+  updateReeds();
+  placeLodge();
+  placeKits();
+  placeSaplings(sapTarget());
+  pickWander();
+}
+function startGame(s) {
+  Snd.init();
+  if (s) {
+    logs = s.logs || 0; logsAll = s.logsAll || 0; clicks = s.clicks || 0; floods = s.floods || 0;
+    Object.assign(owned, s.owned || {}); Object.assign(ups, s.ups || {});
+  }
+  startWorld(s);
+  running = true;
+  $('title').classList.add('hide');
+  renderGoal();
+  renderShop();
+  if (s && s.seen) {
+    const away = Math.min(OFFLINE_CAP, (Date.now() - s.seen) / 1000);
+    const earned = lpsOf() * away * OFFLINE_RATE;
+    if (earned > 1 && away > 60) {
+      logs += earned; logsAll += earned;
+      const h = Math.floor(away / 3600), m = Math.round((away % 3600) / 60);
+      toast(`${icon('log')} The valley kept working: ${fmt(earned)} logs in ${h ? `${h}h ` : ''}${m}m away.`, 5000);
+    }
+  } else if (!s) {
+    setTimeout(() => toast(`${icon('tooth')} Tap the disc to gnaw. Spend what you cut in the lodgebook.`, 5000), 900);
+  }
+}
+
+// ---------- wiring ----------
+{
+  const g = $('gnaw');
+  g.addEventListener('pointerdown', (e) => { e.preventDefault(); gnaw(); });
+  addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
+    if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); gnaw(); }
+  });
+  const shop = $('shop');
+  $('shopBtn').onclick = () => { shop.classList.toggle('closed'); if (!shop.classList.contains('closed')) renderShop(); };
+  $('shopClose').onclick = () => shop.classList.add('closed');
+  const sv = loadSave();
+  if (sv) {
+    $('startBtns').innerHTML = '<button id="contBtn">Continue</button><button id="newBtn" class="ghost">Start again</button>';
+    $('contBtn').onclick = () => startGame(sv);
+  }
+  $('newBtn').onclick = () => { try { localStorage.removeItem(IDLE_KEY); } catch (_) {} startGame(null); };
+}
+
+// ======================================================================
 // Update
 // ======================================================================
 const clock = new THREE.Clock();
 let t = 0, idleAng = 0, actCool = 0, chewSnd = 0, chipTimer = 0, ripTimer = 0, frameAcc = 0, frameN = 0, measureT = 0, colorT = 0, drownT = 0;
 const tmpV = new THREE.Vector3(), sunDir = new THREE.Vector3();
+let chewFx = 0, chewTree = null, wanderT = 0, focusT = 0;
+const focus = new THREE.Vector3(0, 0, 16), camFocus = new THREE.Vector3(0, 0, 16);
+const wanderTo = { x: 0, z: 6 };
+// the beaver picks its way between the dam, the lodge and the water's edge
+function pickWander() {
+  wanderT = rand(4, 9);
+  const spots = [];
+  if (lodge) spots.push({ x: lodge.x + rand(-3, 3), z: lodge.z + lodge.r + rand(1, 3) });
+  for (const i of damMeshes.keys()) if (dam[i]) spots.push({ x: nodeX(i) + rand(-1, 1), z: nodeZ(i) + SP * rand(1, 2.5) });
+  if (wetList.length) { const i = pick(wetList); spots.push({ x: nodeX(i) + rand(-1, 1), z: nodeZ(i) + rand(-1, 1) }); }
+  const z0 = 14 + rand(-8, 8);
+  spots.push({ x: riverCenter(z0) + rand(-4, 4), z: z0 });
+  const s = pick(spots);
+  wanderTo.x = clamp(s.x, -HALF + 5, HALF - 5);
+  wanderTo.z = clamp(s.z, -HALF + 5, HALF - 5);
+}
 initNoise(12345); seed = 12345;
 buildWorld(null);
 running = false;
@@ -3152,11 +3301,14 @@ function update(dt) {
   updatePads(t);
   if (Math.floor(t * 4) !== Math.floor((t - dt) * 4)) updateReeds();
 
-  // ---- player movement ----
+  // ---- the beaver goes about its business ----
   let ix = 0, iz = 0;
-  if (running && $('journal').classList.contains('hide')) {
-    ix = joyV.x + ((keys.KeyD || keys.ArrowRight) ? 1 : 0) - ((keys.KeyA || keys.ArrowLeft) ? 1 : 0);
-    iz = joyV.y + ((keys.KeyS || keys.ArrowDown) ? 1 : 0) - ((keys.KeyW || keys.ArrowUp) ? 1 : 0);
+  if (running) {
+    wanderT -= dt;
+    if (wanderT <= 0 || Math.hypot(wanderTo.x - player.pos.x, wanderTo.z - player.pos.z) < 0.9) pickWander();
+    ix = wanderTo.x - player.pos.x; iz = wanderTo.z - player.pos.z;
+    const d = Math.hypot(ix, iz) || 1;
+    ix /= d; iz /= d;
   }
   const mag = Math.min(1, Math.hypot(ix, iz));
   const gY = groundAt(player.pos.x, player.pos.z), wY = surfAt(player.pos.x, player.pos.z);
@@ -3188,131 +3340,6 @@ function update(dt) {
   if (groundAt(player.pos.x, player.pos.z) - gY > 0.9 * Math.max(0.3, Math.hypot(player.pos.x - ox, player.pos.z - oz)) + 0.12 && !player.swim) { player.pos.x = ox; player.pos.z = oz; }
   player.vel.set((player.pos.x - ox) / Math.max(dt, 1e-4), 0, (player.pos.z - oz) / Math.max(dt, 1e-4));
 
-  // ---- splash ----
-  slapCool = Math.max(0, slapCool - dt);
-  slapBtn.classList.toggle('off', slapCool > 0);
-  if (slapReq && running && slapCool <= 0) {
-    slapCool = 1.0; dash = 0.5; player.slapT = 0.35;
-    const bx = player.pos.x - Math.sin(player.yaw) * 1.1, bz = player.pos.z - Math.cos(player.yaw) * 1.1;
-    if (player.swim) {
-      Snd.splash();
-      for (let k = 0; k < 3; k++) setTimeout(() => ripple(bx, wY, bz, 1 + k * 0.6), k * 120);
-      burst(bx, wY + 0.1, bz, 26, 'water', 3, 6, 16);
-      for (const d of ducks) if (Math.hypot(d.x - player.pos.x, d.z - player.pos.z) < 9) { d.flee = 3; const a = Math.atan2(d.x - player.pos.x, d.z - player.pos.z); d.tx = d.x + Math.sin(a) * 8; d.tz = d.z + Math.cos(a) * 8; Snd.quack(); }
-      for (const f of frogs) if (Math.hypot(f.x - player.pos.x, f.z - player.pos.z) < 6) f.wait = 0;
-      if (deepList.length && Math.random() < 0.5) fishT = 0;
-    } else { Snd.thwack(); burst(bx, gY + 0.1, bz, 12, 'dust', 2.5, 2.5, 10); }
-  }
-  slapReq = false;
-
-  // ---- context action ----
-  let ctx = null;
-  const bt = running && carry > 0 ? buildTarget() : null;
-  if (running) {
-    const tr = carry < CAP ? nearestTree(1.95) : null;
-    const pi = idxOf(player.pos.x, player.pos.z);
-    const depthHere = pi >= 0 && target[pi] === target[pi] ? target[pi] - H[pi] : 0;
-    if (tr) ctx = { type: 'chew', tr };
-    else if (lodge && carry > 0 && lodge.tier < LODGE_COST.length && Math.hypot(player.pos.x - lodge.x, player.pos.z - lodge.z) < lodge.r + 2) ctx = { type: 'lodge' };
-    else if (!lodge && carry > 0 && depthHere >= 0.9) ctx = { type: 'startLodge' };
-    else if (carry < CAP) {
-      const fx = player.pos.x + Math.sin(player.yaw) * 1.6, fz = player.pos.z + Math.cos(player.yaw) * 1.6, fi = idxOf(fx, fz);
-      if (fi >= 0 && dam[fi]) ctx = { type: 'take', i: fi };
-    }
-  }
-  player.chewing = false;
-  actCool -= dt;
-  if (!ctx) setAction(carry >= CAP ? 'log' : 'tooth', carry >= CAP ? 'Full' : 'Chew', false);
-  else if (ctx.type === 'chew') {
-    const tr = ctx.tr, frac = treeFrac(tr), young = frac < 0.98;
-    // a sapling is a thinner trunk, so it comes down quicker and carries less wood
-    const need = (tr.kind === 'pine' ? 1.8 : tr.kind === 'snag' ? 0.9 : 1.3) * Math.max(0.35, frac);
-    if (actHeld) {
-      player.chewing = true;
-      tr.chew += dt;
-      player.yaw = Math.atan2(tr.x - player.pos.x, tr.z - player.pos.z);
-      chipTimer -= dt; chewSnd -= dt;
-      if (chipTimer <= 0) { chipTimer = 0.07; burst(tr.x, tr.h + 0.45, tr.z, 2, 'wood', 1.6, 3); }
-      if (chewSnd <= 0) { chewSnd = 0.14; Snd.chomp(); }
-      if (tr.chew >= need) {
-        tr.state = 'falling';
-        tr.logs = Math.max(1, Math.floor((tr.kind === 'pine' ? 4 : tr.kind === 'snag' ? 2 : 3) * frac));
-        tr.frac = frac;
-        tr.dir.set(tr.x - player.pos.x, tr.z - player.pos.z).normalize();
-        tr.axis.set(tr.dir.y, 0, -tr.dir.x).normalize().applyAxisAngle(new THREE.Vector3(0, 1, 0), -tr.g.rotation.y);
-        Snd.creak();
-      }
-    }
-    setAction('tooth', young ? 'Gnaw' : 'Chew', true, clamp(tr.chew / need, 0, 1));
-  } else if (ctx.type === 'lodge') {
-    if (actHeld && actCool <= 0) {
-      actCool = 0.3; carry--; lodge.progress++;
-      Snd.store();
-      burst(lodge.x, H[idxOf(lodge.x, lodge.z)] + lodge.r, lodge.z, 8, 'wood', 2);
-      if (lodge.progress >= LODGE_COST[lodge.tier]) {
-        lodge.tier++; lodge.progress = 0;
-        Snd.goal();
-        if (lodge.tier === 1) { completeGoal('lodge'); banner(`${icon('lodge')} Your lodge is finished!<small>A warm, dry home in the middle of the pond. Kits will follow.</small>`, 3600); }
-        else banner(`${icon('lodge')} Lodge enlarged!<small>Room for a bigger family.</small>`, 3000);
-      }
-      buildLodge();
-    }
-    const cost = LODGE_COST[lodge.tier];
-    setAction('lodge', `Lodge ${lodge.progress}/${cost}`, true, lodge.progress / cost);
-  } else if (ctx.type === 'startLodge') {
-    if (actHeld && actCool <= 0) {
-      actCool = 0.4;
-      lodge = { x: player.pos.x + Math.sin(player.yaw) * 1.4, z: player.pos.z + Math.cos(player.yaw) * 1.4, tier: 0, progress: 0, r: 1 };
-      buildLodge();
-      toast('Lodge started! Bring logs here to build it up.', 3200);
-    }
-    setAction('lodge', 'Start lodge', true, 0);
-  } else if (ctx.type === 'take') {
-    if (actHeld && actCool <= 0) {
-      actCool = 0.45;
-      dam[ctx.i]--; carry++;
-      Snd.knock();
-      burst(nodeX(ctx.i), H[ctx.i] + dam[ctx.i] * DAM_STEP + 0.3, nodeZ(ctx.i), 8, 'wood', 2);
-      buildDamMesh(ctx.i);
-      computeWater();
-    }
-    setAction('axe', 'Take apart', true, 0);
-  }
-
-  // ---- build ----
-  buildBtn.classList.toggle('hidden', !(running && carry > 0));
-  ghost.visible = !!bt;
-  if (bt) {
-    const lvl = dam[bt.i], worn = lvl > 0 && wear[bt.i] > PATCH_AT;
-    const gy = worn ? Math.max(0, lvl - 0.5) * DAM_STEP : lvl * DAM_STEP + DAM_STEP / 2 + 0.02;
-    ghost.position.set(nodeX(bt.i), H[bt.i] + gy, nodeZ(bt.i));
-    ghostMat.color.setHex(!bt.ok ? 0xff8a7a : worn ? 0xe8c37a : 0x9fe39a);
-    ghostMat.opacity = 0.32 + Math.sin(t * 4) * 0.08;
-    $('buildLabel').textContent = !bt.ok ? (lvl >= DAM_MAX ? 'Max height' : "Can't build") : worn ? 'Patch dam' : lvl ? `Raise ${lvl + 1}/${DAM_MAX}` : 'Build dam';
-    buildBtn.classList.toggle('off', !bt.ok);
-    if (buildReq && bt.ok) {
-      carry--;
-      Snd.knock();
-      if (worn) {                                   // fresh sticks and mud packed into the worn section
-        wear[bt.i] = 0;
-        burst(nodeX(bt.i), H[bt.i] + lvl * DAM_STEP * 0.7, nodeZ(bt.i), 8, 'wood', 1.6, 2.4);
-        buildDamMesh(bt.i);
-        computeWater();
-        if (!patchHinted) { patchHinted = true; toast('Patched. A dam only holds as long as someone keeps mending it.', 3400); }
-      } else {
-        dam[bt.i]++;
-        shake = Math.max(shake, 0.05);
-        burst(nodeX(bt.i), H[bt.i] + dam[bt.i] * DAM_STEP, nodeZ(bt.i), 10, 'wood', 2, 3);
-        buildDamMesh(bt.i);
-        computeWater();
-        if (river[bt.i]) completeGoal('dam');
-        if (dam[bt.i] >= DAM_MAX) completeGoal('raise');
-        if (!goals.pond && river[bt.i]) toast('Water backs up behind the dam. Make it wider than the stream to hold a pond.', 4200);
-      }
-    }
-  }
-  buildReq = false;
-
   // ---- trees ----
   for (let i = trees.length - 1; i >= 0; i--) {
     const tr = trees[i];
@@ -3323,7 +3350,7 @@ function update(dt) {
       if (s >= tr.size) tr.state = 'stand';
     }
     if (tr.state === 'stand' || tr.state === 'grow') {
-      const chewing = player.chewing && ctx && ctx.tr === tr;
+      const chewing = chewFx > 0 && chewTree === tr;
       tr.inner.rotation.z = Math.sin(t * 1.1 + tr.ph) * 0.02 * (1 + rainAmt);
       tr.inner.position.x = chewing ? Math.sin(t * 70) * 0.04 : 0;
     } else if (tr.state === 'falling') {
@@ -3624,26 +3651,28 @@ function update(dt) {
   // ---- camera ----
   const portrait = camera.aspect < 1;
   if (zoomI >= 0) zoom += (ZOOMS[zoomI] - zoom) * Math.min(1, dt * 3);
-  const z = zoom * (portrait ? 1.45 : 1.05);
+  const z = zoom * (portrait ? 1.3 : 1);
   shake = Math.max(0, shake - dt * 1.6);
-  if (running) {
-    const lx = player.pos.x + player.vel.x * 0.15, lz = player.pos.z + player.vel.z * 0.15;
-    tmpV.set(lx, player.y + 11.5 * z, lz + 10.5 * z);
-    camera.position.lerp(tmpV, Math.min(1, dt * 2.5));
-    camera.lookAt(lx, player.y, lz - 1.2);
-  } else {
-    idleAng += dt * 0.05;
-    const fz = 10;
-    const fx = riverCenter(fz);
-    camera.position.set(fx + Math.sin(idleAng) * 30, baseZ(fz) + 16, fz + Math.cos(idleAng) * 30);
-    camera.lookAt(fx, baseZ(fz), fz);
+  idleAng += dt * 0.035;
+  focusT -= dt;
+  if (focusT <= 0) {                                   // keep the circuit over whatever has been built
+    focusT = 2;
+    let fx = riverCenter(16), fz = 16, n = 0, sx = 0, sz = 0;
+    for (const i of damMeshes.keys()) if (dam[i]) { sx += nodeX(i); sz += nodeZ(i); n++; }
+    if (n) { fx = sx / n; fz = sz / n - 4; }
+    if (lodge) { fx = (fx + lodge.x) / 2; fz = (fz + lodge.z) / 2; }
+    focus.set(fx, baseZ(fz), fz);
   }
+  camFocus.lerp(focus, Math.min(1, dt * 0.6));
+  const fx = camFocus.x, fy = camFocus.y, fz = camFocus.z;
+  tmpV.set(fx + Math.sin(idleAng) * 23 * z, fy + 13.5 * z, fz + Math.cos(idleAng) * 23 * z);
+  camera.position.lerp(tmpV, Math.min(1, dt * 1.6));
+  camera.lookAt(fx, fy + 1, fz);
   if (shake > 0) { const s = shake * shake; camera.position.x += rand(-s, s); camera.position.y += rand(-s, s); }
   sky.position.copy(camera.position);
   stars.position.copy(camera.position);
-  const focusX = running ? player.pos.x : riverCenter(10), focusZ = running ? player.pos.z : 10, focusY = running ? player.y : baseZ(10);
-  sun.target.position.set(focusX, focusY, focusZ);
-  sun.position.set(focusX + sunDir.x * 45, focusY + Math.max(sunDir.y, 0.2) * 45, focusZ + sunDir.z * 45);
+  sun.target.position.set(fx, fy, fz);
+  sun.position.set(fx + sunDir.x * 45, fy + Math.max(sunDir.y, 0.2) * 45, fz + sunDir.z * 45);
 
   // ---- popups / toasts ----
   for (let i = pops.length - 1; i >= 0; i--) {
@@ -3658,7 +3687,8 @@ function update(dt) {
   }
   if (toastTimer > 0) { toastTimer -= dt; if (toastTimer <= 0) $('toast').classList.remove('show'); }
   if (bannerTimer > 0) { bannerTimer -= dt; if (bannerTimer <= 0) $('banner').classList.remove('show'); }
-  if (running) updateHUD();
+  chewFx = Math.max(0, chewFx - dt);
+  if (running) { idleTick(dt); refreshStats(); }
 }
 
 function loop() {
@@ -3682,7 +3712,7 @@ addEventListener('resize', () => {
   makeRT();
 });
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) { save(); actHeld = false; joyId = null; joyV.x = joyV.y = 0; joy.style.display = 'none'; Snd.ctx?.suspend?.(); }
+  if (document.hidden) { save(); Snd.ctx?.suspend?.(); }
   else Snd.ctx?.resume?.();
 });
 addEventListener('pagehide', save);
